@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -18,8 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RateLimitRedisTest {
     @Autowired
     private RateLimitRedis redisManager;
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
 
     @Test
     public void rateLimitTest() throws InterruptedException {

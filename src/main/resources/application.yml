@@ -3,3 +3,11 @@ spring:
     database: 0
     host: ${REDIS_HOST:127.0.0.1}
     port: ${REDIS_PORT:6379}
+
+rate:
+  entry:
+    max: 10
+    rate: 10
+  device:
+    max: 1
+    rate: 1

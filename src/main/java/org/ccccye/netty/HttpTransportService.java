@@ -7,6 +7,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +17,8 @@ import java.net.InetSocketAddress;
 @Service
 @Slf4j
 public class HttpTransportService {
+    @Autowired
+    private HttpTransportContext httpTransportContext;
 
     private NioEventLoopGroup bossGroup;
     private NioEventLoopGroup workGroup;
@@ -33,7 +36,7 @@ public class HttpTransportService {
         bootstrap.group(bossGroup, workGroup)
                 .channel(NioServerSocketChannel.class)
                 .localAddress(new InetSocketAddress(8888))
-                .childHandler(new HttpHandlerInitializer())
+                .childHandler(new HttpHandlerInitializer(httpTransportContext))
                 .childOption(ChannelOption.SO_KEEPALIVE, false);
         serverChannel = bootstrap.bind().sync().channel();
 

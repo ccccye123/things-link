@@ -31,4 +31,12 @@ public class HttpTransportHandler extends SimpleChannelInboundHandler<FullHttpRe
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        System.out.println(cause.getMessage());
+        ByteBuf msg = Unpooled.copiedBuffer("error", CharsetUtil.UTF_8);
+        ctx.writeAndFlush(msg);
+        ctx.close();
+    }
 }

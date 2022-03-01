@@ -1,6 +1,8 @@
 package org.ccccye.redis;
 
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Slf4j
 public class RateLimitRedis {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -35,6 +38,11 @@ public class RateLimitRedis {
      * @Return boolean
      */
     public boolean rateLimit(String key, int max, int rate) {
+        if (StringUtils.isBlank(key)){
+            log.warn("限流的key为空!!!");
+            return false;
+        }
+
         List<String> keyList = new ArrayList<>(1);
         keyList.add(key);
         Long ret = stringRedisTemplate

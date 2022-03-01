@@ -1,6 +1,0 @@
-spring:
-  redis:
-    database: 1
-    host: ${REDIS_HOST:159.75.11.72}
-    port: ${REDIS_PORT:6379}
-    password: dhcc@2020

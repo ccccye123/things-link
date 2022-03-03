@@ -30,11 +30,11 @@ public class HttpAuthHandler extends ChannelInboundHandlerAdapter {
             ctx.fireExceptionCaught(new Exception("token为空"));
         } else {
             SetOperations<String, String> ops = transportContext.getStringRedisTemplate().opsForSet();
-            Boolean exist = ops.isMember(DEVICES_REDIS_KEY, token);
-            if (BooleanUtils.isNotFalse(exist)) {
-                ctx.fireExceptionCaught(new Exception("token不存在," + token));
-            } else {
+            boolean exist = ops.isMember(DEVICES_REDIS_KEY, token);
+            if (exist) {
                 ctx.fireChannelRead(msg);
+            } else {
+                ctx.fireExceptionCaught(new Exception("token不存在," + token));
             }
         }
     }

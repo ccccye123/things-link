@@ -18,7 +18,6 @@ public class HttpRateEntryHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("entry");
         boolean pass = transportContext.getRateLimitRedis()
                 .rateLimit(ENTRY_RATE_KEY,
                         transportContext.getEntryBucketMax(),

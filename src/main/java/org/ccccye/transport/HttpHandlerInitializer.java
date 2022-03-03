@@ -1,4 +1,4 @@
-package org.ccccye.netty;
+package org.ccccye.transport;
 
 
 import io.netty.channel.ChannelInitializer;
@@ -19,14 +19,13 @@ public class HttpHandlerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) {
         ChannelPipeline pipeline = ch.pipeline();
-
         pipeline.addLast("decoder", new HttpRequestDecoder());
         pipeline.addLast("encoder", new HttpResponseEncoder());
         pipeline.addLast("compressor", new HttpContentCompressor());
         pipeline.addLast("aggregator", new HttpObjectAggregator(512 * 1024));
         pipeline.addLast("entryHandler", new HttpRateEntryHandler(httpTransportContext));
         pipeline.addLast("authHandler", new HttpAuthHandler(httpTransportContext));
-        pipeline.addLast("deviceHandler", new HttpDeviceRateHandler(httpTransportContext));
-        pipeline.addLast("handler", new HttpTransportHandler());
+        pipeline.addLast("deviceHandler", new HttpRateDeviceHandler(httpTransportContext));
+        pipeline.addLast("handler", new HttpBusinessHandler());
     }
 }

@@ -1,14 +1,17 @@
-package org.ccccye.netty;
+package org.ccccye.transport;
 
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpRequest;
 
-public class HttpDeviceRateHandler extends ChannelInboundHandlerAdapter {
+/**
+ * 按设备限流
+ */
+public class HttpRateDeviceHandler extends ChannelInboundHandlerAdapter {
     private HttpTransportContext transportContext;
 
-    public HttpDeviceRateHandler(HttpTransportContext transportContext) {
+    public HttpRateDeviceHandler(HttpTransportContext transportContext) {
         this.transportContext = transportContext;
     }
 

@@ -1,16 +1,14 @@
-package org.ccccye.netty;
+package org.ccccye.transport;
 
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
  * 服务入口限流
  */
 public class HttpRateEntryHandler extends ChannelInboundHandlerAdapter {
-    private static final String entryRateKey = "ENTRY_RATE";
+    private static final String ENTRY_RATE_KEY = "ENTRY_RATE";
 
     private final HttpTransportContext transportContext;
 
@@ -22,7 +20,7 @@ public class HttpRateEntryHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         System.out.println("entry");
         boolean pass = transportContext.getRateLimitRedis()
-                .rateLimit(entryRateKey,
+                .rateLimit(ENTRY_RATE_KEY,
                         transportContext.getEntryBucketMax(),
                         transportContext.getEntryRateLimit());
         if (pass) {

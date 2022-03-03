@@ -1,4 +1,4 @@
-package org.ccccye.netty;
+package org.ccccye.transport;
 
 
 import io.netty.buffer.ByteBuf;
@@ -9,7 +9,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 
-public class HttpTransportHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class HttpBusinessHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private ByteBuf ok = Unpooled.copiedBuffer("ok", CharsetUtil.UTF_8);
 
     @Override

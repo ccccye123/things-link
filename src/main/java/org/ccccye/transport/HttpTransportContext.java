@@ -1,4 +1,4 @@
-package org.ccccye.netty;
+package org.ccccye.transport;
 
 import lombok.Getter;
 import org.ccccye.redis.RateLimitRedis;

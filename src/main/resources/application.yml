@@ -6,8 +6,8 @@ spring:
 
 rate:
   entry:
+    max: 1000
+    rate: 1000
+  device:
     max: 10
     rate: 10
-  device:
-    max: 1
-    rate: 1

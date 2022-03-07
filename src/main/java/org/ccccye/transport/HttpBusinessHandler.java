@@ -10,17 +10,17 @@ import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public class HttpBusinessHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
-    private ByteBuf ok = Unpooled.copiedBuffer("ok", CharsetUtil.UTF_8);
     private static AtomicInteger count = new AtomicInteger(0);
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (req.method() != HttpMethod.POST) {
+            ctx.writeAndFlush(Unpooled.copiedBuffer("error", CharsetUtil.UTF_8))
+                    .addListener(ChannelFutureListener.CLOSE);
             return;
         }
 
@@ -29,14 +29,13 @@ public class HttpBusinessHandler extends SimpleChannelInboundHandler<FullHttpReq
 //        System.out.println(body);
 
         count.addAndGet(1);
-        log.info("success: " + count.get());
+        System.out.println("success: " + count.get());
 
         // 应答
-        ByteBuf out = ok;
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1,
                 HttpResponseStatus.OK,
-                out);
+                Unpooled.copiedBuffer("ok", CharsetUtil.UTF_8));
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
@@ -44,7 +43,6 @@ public class HttpBusinessHandler extends SimpleChannelInboundHandler<FullHttpReq
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         log.warn(cause.getMessage());
-//        System.out.println(cause.getMessage());
         ByteBuf msg = Unpooled.copiedBuffer("error", CharsetUtil.UTF_8);
         ctx.writeAndFlush(msg);
         ctx.close();

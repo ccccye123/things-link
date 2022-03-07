@@ -10,24 +10,27 @@ import io.netty.handler.codec.http.FullHttpRequest;
  */
 public class HttpRateDeviceHandler extends ChannelInboundHandlerAdapter {
     private HttpTransportContext transportContext;
+    private final int BUCKET_MAX;
+    private final int RATE_LIMIT;
+    private static final String DEVICE_RATE_KEY_TEMPLATE = "rate:device.%s.limit";
 
     public HttpRateDeviceHandler(HttpTransportContext transportContext) {
         this.transportContext = transportContext;
+        this.BUCKET_MAX = transportContext.getEntryBucketMax();
+        this.RATE_LIMIT = transportContext.getEntryRateLimit();
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         FullHttpRequest req = (FullHttpRequest) msg;
         String token = req.headers().getAsString("D-Token");
+        String redisKey = String.format(DEVICE_RATE_KEY_TEMPLATE, token);
 
-        int bucketMax = transportContext.getDeviceBucketMax();
-        int rate = transportContext.getEntryRateLimit();
-
-        boolean pass = transportContext.getRateLimitRedis().rateLimit(token, bucketMax, rate);
+        boolean pass = transportContext.getRateLimitRedis().rateLimit(redisKey, BUCKET_MAX, RATE_LIMIT);
         if (pass) {
             ctx.fireChannelRead(msg);
         } else {
-            ctx.fireExceptionCaught(new Exception("设备限流:" + transportContext.getDeviceRateLimit()));
+            ctx.fireExceptionCaught(new Exception("设备限流:" + RATE_LIMIT));
         }
     }
 }

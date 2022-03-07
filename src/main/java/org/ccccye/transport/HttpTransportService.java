@@ -6,6 +6,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.ResourceLeakDetector;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,8 @@ public class HttpTransportService {
                 .localAddress(new InetSocketAddress(8888))
                 .childHandler(new HttpHandlerInitializer(httpTransportContext))
                 .childOption(ChannelOption.SO_KEEPALIVE, false);
+
+//        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.ADVANCED);
         serverChannel = bootstrap.bind().sync().channel();
 
         log.info("Http Transport Stated");

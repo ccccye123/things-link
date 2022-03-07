@@ -9,6 +9,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.ResourceLeakDetector;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -26,6 +27,9 @@ public class HttpTransportService {
 
     private Channel serverChannel;
 
+    @Value("${netty.port}")
+    private Integer nettyPort;
+
     @PostConstruct
     public void init() throws InterruptedException {
         log.info("Staring Http transport");
@@ -36,7 +40,7 @@ public class HttpTransportService {
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workGroup)
                 .channel(NioServerSocketChannel.class)
-                .localAddress(new InetSocketAddress(8888))
+                .localAddress(new InetSocketAddress(this.nettyPort))
                 .childHandler(new HttpHandlerInitializer(httpTransportContext))
                 .childOption(ChannelOption.SO_KEEPALIVE, false);
 

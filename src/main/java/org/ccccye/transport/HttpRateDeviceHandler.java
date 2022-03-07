@@ -16,8 +16,8 @@ public class HttpRateDeviceHandler extends ChannelInboundHandlerAdapter {
 
     public HttpRateDeviceHandler(HttpTransportContext transportContext) {
         this.transportContext = transportContext;
-        this.BUCKET_MAX = transportContext.getEntryBucketMax();
-        this.RATE_LIMIT = transportContext.getEntryRateLimit();
+        this.BUCKET_MAX = transportContext.getDeviceBucketMax();
+        this.RATE_LIMIT = transportContext.getDeviceRateLimit();
     }
 
     @Override

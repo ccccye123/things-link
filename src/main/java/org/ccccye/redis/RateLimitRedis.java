@@ -20,6 +20,7 @@ public class RateLimitRedis {
     private StringRedisTemplate stringRedisTemplate;
 
     private static final DefaultRedisScript<Long> rateScript;
+    private static final Long OK = 1L;
 
     static {
         rateScript = new DefaultRedisScript<>();
@@ -51,7 +52,7 @@ public class RateLimitRedis {
                         Integer.toString(max),
                         Integer.toString(rate),
                         Long.toString(System.currentTimeMillis()));
-        return Long.valueOf(1).equals(ret);
+        return OK.equals(ret);
     }
 
 

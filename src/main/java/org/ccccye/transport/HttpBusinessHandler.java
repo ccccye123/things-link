@@ -10,11 +10,14 @@ import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public class HttpBusinessHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private static AtomicInteger count = new AtomicInteger(0);
+    ExecutorService threadPool = Executors.newFixedThreadPool(8);
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) {
@@ -24,20 +27,21 @@ public class HttpBusinessHandler extends SimpleChannelInboundHandler<FullHttpReq
             return;
         }
 
-        // 处理请求
-        String body = req.content().toString(CharsetUtil.UTF_8);
+        threadPool.execute(() -> {
+            // 处理请求
+            String body = req.content().toString(CharsetUtil.UTF_8);
 //        System.out.println(body);
+            count.addAndGet(1);
+            System.out.println("success: " + count.get());
 
-        count.addAndGet(1);
-        System.out.println("success: " + count.get());
-
-        // 应答
-        FullHttpResponse response = new DefaultFullHttpResponse(
-                HttpVersion.HTTP_1_1,
-                HttpResponseStatus.OK,
-                Unpooled.copiedBuffer("ok", CharsetUtil.UTF_8));
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
-        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+            // 应答
+            FullHttpResponse response = new DefaultFullHttpResponse(
+                    HttpVersion.HTTP_1_1,
+                    HttpResponseStatus.OK,
+                    Unpooled.copiedBuffer("ok", CharsetUtil.UTF_8));
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
+            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+        });
     }
 
     @Override
